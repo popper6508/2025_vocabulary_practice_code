@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vocabulary Practice</title>
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        table, th, td {
+            border: 1px solid black;
+        }
+        th, td {
+            padding: 8px;
+            text-align: left;
+        }
+        .table-container {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Vocabulary Practice</h1>
+
+    <!-- Input range for selecting row -->
+    <form method="POST">
+        <label for="start">Start Row:</label>
+        <input type="number" id="start" name="start" value="{{ start or '' }}" required>
+        <label for="end">End Row:</label>
+        <input type="number" id="end" name="end" value="{{ end or '' }}" required>
+        <button type="submit" name="next">Set Range</button>
+    </form>
+
+    {% if meaning_lines and sentence_lines %}
+        <!-- Display meaning as multiple lines -->
+        <h3>Meaning:</h3>
+        <ul>
+            {% for line in meaning_lines %}
+                <li>{{ line }}</li>
+            {% endfor %}
+        </ul>
+
+        <!-- Display sentence as multiple lines -->
+        <h3>Sentence:</h3>
+        <ul>
+            {% for line in sentence_lines %}
+                <li>{{ line }}</li>
+            {% endfor %}
+        </ul>
+
+        <!-- Input field for user answer -->
+        <form method="POST">
+            <input type="hidden" name="start" value="{{ start }}">
+            <input type="hidden" name="end" value="{{ end }}">
+            <input type="hidden" name="selected_row" value="{{ selected_row }}">
+            <input type="text" name="word" placeholder="Enter your answer">
+            <button type="submit" name="check_answer">Check Answer</button>
+            <button type="submit" name="next">Next</button>
+            <button type="submit" name="show_answer">Show Answer</button>
+        </form>
+
+        <!-- Display feedback -->
+        {% if feedback %}
+            <p><strong>{{ feedback }}</strong></p>
+        {% endif %}
+
+        <!-- Display the correct answer if "Show Answer" is clicked -->
+        {% if show_answer %}
+            <p><strong>Correct Answer: {{ show_answer }}</strong></p>
+        {% endif %}
+    {% endif %}
+
+    <!-- Display full vocabulary DataFrame -->
+    <div class="table-container">
+        <h2>Full Vocabulary List</h2>
+        {{ df|safe }}
+    </div>
+</body>
+</html>
