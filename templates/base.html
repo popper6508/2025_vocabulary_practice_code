@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vocabulary Tool</title>
+    <style>
+        nav {
+            background-color: #f4f4f4;
+            padding: 10px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        nav button {
+            padding: 10px 20px;
+            margin: 5px;
+            border: none;
+            background-color: #007BFF;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+        nav button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav>
+        <form method="GET" action="/add" style="display: inline;">
+            <button type="submit">Add Words</button>
+        </form>
+        <form method="GET" action="/" style="display: inline;">
+            <button type="submit">Vocabulary Practice</button>
+        </form>
+    </nav>
+
+    {% block content %}{% endblock %}
+</body>
+</html>

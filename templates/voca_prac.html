@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Vocabulary Practice</h1>
+
+<form method="POST">
+    <label for="start">Start Row:</label>
+    <input type="number" id="start" name="start" value="{{ start or '' }}" required>
+    <label for="end">End Row:</label>
+    <input type="number" id="end" name="end" value="{{ end or '' }}" required>
+    <button type="submit" name="next">Set Range</button>
+</form>
+
+{% if meaning_lines and sentence_lines %}
+    <h3>Meaning:</h3>
+    <ul>
+        {% for line in meaning_lines %}
+            <li>{{ line }}</li>
+        {% endfor %}
+    </ul>
+
+    <h3>Sentence:</h3>
+    <ul>
+        {% for line in sentence_lines %}
+            <li>{{ line }}</li>
+        {% endfor %}
+    </ul>
+
+    <form method="POST">
+        <input type="hidden" name="start" value="{{ start }}">
+        <input type="hidden" name="end" value="{{ end }}">
+        <input type="hidden" name="selected_row" value="{{ selected_row }}">
+        <input type="text" name="word" placeholder="Enter your answer">
+        <button type="submit" name="check_answer">Check Answer</button>
+        <button type="submit" name="next">Next</button>
+        <button type="submit" name="show_answer">Show Answer</button>
+    </form>
+
+    {% if feedback %}
+        <p><strong>{{ feedback }}</strong></p>
+    {% endif %}
+
+    {% if show_answer %}
+        <p><strong>Correct Answer: {{ show_answer }}</strong></p>
+    {% endif %}
+{% endif %}
+
+<h2>Full Vocabulary List</h2>
+<div class="table-container">
+    {{ df|safe }}
+</div>
+{% endblock %}

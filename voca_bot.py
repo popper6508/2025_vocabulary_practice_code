@@ -1,6 +1,8 @@
 import pandas as pd
 import random
 from flask import Flask, render_template, request
+from bs4 import BeautifulSoup as bs
+import requests
 
 app = Flask(__name__)
 
@@ -54,29 +56,91 @@ def vocabulary():
             show_answer = correct_answer
 
     return render_template(
-        "visual.html",
+        "voca_prac.html",
         meaning_lines=split_into_lines(meaning),
         sentence_lines=split_into_lines(sentence),
         correct_answer=correct_answer,
         feedback=feedback,
         user_input=user_input,
         show_answer=show_answer,
-        data=vocabulary_data,
         start=start,
         end=end,
         selected_row=selected_row,
-        df=df.to_html(classes="table table-striped", index=False),
+        df=df[['No', 'Meaning', 'Answer']].to_html(classes="table table-striped", index=False),
     )
 
 
+@app.route("/add", methods=["GET", "POST"])
+def add_vocabulary():
+    excel_file = "vocabulary.xlsx"
+    original_df = pd.read_excel(excel_file)
+    original_row_count = len(original_df)
+    message = None
+    error = None
+
+    if request.method == "POST":
+        if "add_word" in request.form:
+            new_word = request.form.get("word").strip().lower()
+
+            url = f"https://dictionary.cambridge.org/dictionary/english/{new_word}"
+            headers = {'User-Agent': 'Mozilla/5.0'}
+            response = requests.get(url, headers=headers)
+
+            if response.status_code == 200:
+                soup = bs(response.text, 'html.parser')
+
+                word_definitions = soup.find_all(class_="def ddef_d db")
+                definitions = [definition.text.strip() for definition in word_definitions]
+
+                word_sentences = soup.find_all(class_="deg")
+                sentences = [sentence.text.strip() for sentence in word_sentences]
+
+                next_number = original_row_count + 1
+
+                new_row = {
+                    "No": next_number,
+                    "Meaning": "\n".join(definitions),
+                    "Answer": new_word,
+                    "Sentences": "\n".join(sentences)
+                }
+
+                updated_df = pd.concat([original_df, pd.DataFrame([new_row])], ignore_index=True)
+
+                if len(updated_df) >= original_row_count + 1:
+                    updated_df.to_excel(excel_file, index=False)
+                    message = f"'{new_word}' added successfully!"
+                else:
+                    error = f"Failed to add '{new_word}'. Please try again."
+
+        elif "remove_word" in request.form:
+            word_to_remove = request.form.get("remove_word").strip().lower()
+
+            if word_to_remove in original_df["Answer"].str.lower().values:
+                updated_df = original_df[original_df["Answer"].str.lower() != word_to_remove]
+
+                updated_df["No"] = range(1, len(updated_df) + 1)
+
+                updated_df.to_excel(excel_file, index=False)
+
+                message = f"'{word_to_remove}' removed successfully!"
+            else:
+                error = f"'{word_to_remove}' not found in the vocabulary list."
+
+    updated_df = pd.read_excel(excel_file)
+
+    return render_template(
+        "add_vocabulary.html",
+        message=message,
+        error=error,
+        df=updated_df[['No', 'Meaning','Answer']].to_html(classes="table table-striped", index=False),
+    )
+
+
+
 def split_into_lines(text):
-    """
-    Generalized function to split text into multiple lines.
-    Handles \n, ;, ., or other delimiters.
-    """
     if isinstance(text, str):
         return text.replace("\n", "<br>").split("<br>")
-    return [text] 
+    return [text]
 
 
 if __name__ == "__main__":

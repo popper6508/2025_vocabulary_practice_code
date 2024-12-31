@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Add or Remove Vocabulary</h1>
+
+<!-- Display messages -->
+{% if message %}
+    <p style="color: green;"><strong>{{ message }}</strong></p>
+{% endif %}
+{% if error %}
+    <p style="color: red;"><strong>{{ error }}</strong></p>
+{% endif %}
+
+<!-- Add Word Form -->
+<h2>Add New Vocabulary</h2>
+<form method="POST">
+    <label for="word">Word:</label><br>
+    <input type="text" id="word" name="word" placeholder="Enter a new word" required><br><br>
+    <button type="submit" name="add_word">Add Word</button>
+</form>
+
+<!-- Remove Word Form -->
+<h2>Remove Vocabulary</h2>
+<form method="POST">
+    <label for="remove_word">Word to Remove:</label><br>
+    <input type="text" id="remove_word" name="remove_word" placeholder="Enter a word to remove" required><br><br>
+    <button type="submit" name="remove_word">Remove Word</button>
+</form>
+
+<!-- Display Vocabulary List -->
+<h2>Vocabulary List</h2>
+<div class="table-container">
+    {{ df|safe }}
+</div>
+{% endblock %}
