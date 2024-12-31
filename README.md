@@ -1,5 +1,6 @@
 ## Simple Vocabulary Practice Page
----
+----
+
 First, run Python code
 
 ### **1. Add vocabulary page**
@@ -8,6 +9,8 @@ First, run Python code
 
 - Add and remove vocabularies
 - check "Vocabulary List" after update
+
+---
 
 ### **2. Vocabulary practice**
 
