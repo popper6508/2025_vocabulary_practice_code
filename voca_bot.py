@@ -11,8 +11,6 @@ def vocabulary():
     excel_file = "vocabulary.xlsx"
     df = pd.read_excel(excel_file)
 
-    vocabulary_data = df.to_dict(orient="records")
-
     start = None
     end = None
     selected_row = None
