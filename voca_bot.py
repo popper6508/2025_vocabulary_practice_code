@@ -32,7 +32,7 @@ def vocabulary():
             selected_row = random.randint(start, end)
             row_data = df.iloc[selected_row]
             correct_answer = row_data["Answer"]
-            meaning = row_data["Meaning"]
+            meaning = row_data["Meaning"].replace(correct_answer, "_____")
             sentence = row_data["Sentences"].replace(correct_answer, "_____")
 
         elif "check_answer" in request.form:
@@ -41,7 +41,7 @@ def vocabulary():
                 selected_row = int(request.form.get("selected_row"))
                 row_data = df.iloc[selected_row]
                 correct_answer = row_data["Answer"]
-                meaning = row_data["Meaning"]
+                meaning = row_data["Meaning"].replace(correct_answer, "_____")
                 sentence = row_data["Sentences"].replace(correct_answer, "_____")
                 feedback = "Correct!" if user_input == correct_answer.lower() else "Try again!"
 
@@ -49,7 +49,7 @@ def vocabulary():
             selected_row = int(request.form.get("selected_row"))
             row_data = df.iloc[selected_row]
             correct_answer = row_data["Answer"]
-            meaning = row_data["Meaning"]
+            meaning = row_data["Meaning"].replace(correct_answer, "_____")
             sentence = row_data["Sentences"].replace(correct_answer, "_____")
             show_answer = correct_answer
 
